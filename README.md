@@ -1,6 +1,6 @@
 # BellaJS
 
-A lightweight, functional utility library for Node.js, Bun, and Deno. Built with modern JavaScript and zero runtime dependencies.
+A lightweight, functional utility library for Node.js, Bun, and Deno.
 
 [![npm version](https://badge.fury.io/js/@pwshub%2Fbellajs.svg)](https://badge.fury.io/js/@pwshub%2Fbellajs)
 ![CodeQL](https://github.com/pwshub/bellajs/workflows/CodeQL/badge.svg)
@@ -287,15 +287,6 @@ isAbsoluteUrl('/path/to/resource')       // false
 | Bun | 1.0+ | ✅ Full |
 | Deno | 2.0+ | ✅ Full |
 | Browsers | Modern (ESM) | ✅ Full |
-
-**Browser Support:**
-- Chrome 11+
-- Firefox 21+
-- Safari 5.1+
-- Edge (all versions)
-- Mobile browsers (modern)
-
-**Note:** Uses `globalThis.crypto` for secure random generation - available in all modern browsers via Web Crypto API.
 
 ## Development
 
