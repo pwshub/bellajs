@@ -7,31 +7,33 @@ on: [push, pull_request]
 
 jobs:
   test:
+
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        deno-version: [2.x.x]
+        node_version: [22.x, 24.x, 25.x]
 
     steps:
-      - name: Git Checkout Deno Module
-        uses: actions/checkout@v4
-      - name: Use Deno Version ${{ matrix.deno-version }}
-        uses: denoland/setup-deno@v2
-        with:
-          deno-version: ${{ matrix.deno-version }}
-      - name: format check
-        run: deno fmt --check mod.ts utils/* scripts/* tests/*
-      - name: run linter
-        run: deno lint mod.ts utils/* scripts/* tests/*
-      - name: run test
-        run: deno test --allow-all --coverage=cov/
+    - uses: actions/checkout@v6
 
-      - name: Generate coverage report
-        run: deno coverage --lcov cov > cov.lcov
+    - name: setup Node.js v${{ matrix.node_version }}
+      uses: actions/setup-node@v6
+      with:
+        node-version: ${{ matrix.node_version }}
 
-      - name: Upload coverage to Coveralls.io
-        uses: coverallsapp/github-action@v2
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: cov.lcov
+    - name: run npm scripts
+      env:
+        PROXY_SERVER: ${{ secrets.PROXY_SERVER }}
+      run: |
+        npm install
+        npm run lint
+        npm run test
+
+    - name: cache node modules
+      uses: actions/cache@v5
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
