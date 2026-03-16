@@ -1,0 +1,38 @@
+{
+  "name": "@pwshub/bellajs",
+  "version": "13.0.0",
+  "description": "A useful helper for any javascript program",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pwshub/bellajs"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "bun": ">=1.0.0"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./src/index.js"
+    }
+  },
+  "files": [
+    "src",
+    "index.d.ts"
+  ],
+  "scripts": {
+    "pretest": "npm run lint",
+    "test": "node --test src/*.test.js",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.0.3",
+    "globals": "^17.4.0"
+  },
+  "keywords": [],
+  "author": "ndaidong",
+  "license": "MIT"
+}

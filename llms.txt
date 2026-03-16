@@ -1,0 +1,753 @@
+# Bellajs - LLM Reference
+
+A lightweight, functional utility library for JavaScript with zero runtime dependencies. Works in Node.js, Bun, Deno, and browsers.
+
+## Installation
+
+```bash
+npm install @pwshub/bellajs
+# or
+pnpm install @pwshub/bellajs
+# or
+bun add @pwshub/bellajs
+```
+
+## Import
+
+```javascript
+// Import specific functions
+import { clone, formatDate, maybe, pipe } from '@pwshub/bellajs'
+
+// Or import entire modules
+import * as detection from '@pwshub/bellajs'
+```
+
+---
+
+## Detection Utilities (`src/detection.js`)
+
+Type checking functions for JavaScript values.
+
+### `isNumber(val)`
+Check if value is a number.
+```javascript
+isNumber(42)        // true
+isNumber('42')      // false
+isNumber(null)      // false
+```
+
+### `isInteger(val)`
+Check if value is an integer.
+```javascript
+isInteger(42)       // true
+isInteger(3.14)     // false
+```
+
+### `isArray(val)`
+Check if value is an array.
+```javascript
+isArray([1, 2, 3])  // true
+isArray('array')    // false
+```
+
+### `isString(val)`
+Check if value is a string.
+```javascript
+isString('hello')   // true
+isString(42)        // false
+```
+
+### `isBoolean(val)`
+Check if value is a boolean.
+```javascript
+isBoolean(true)     // true
+isBoolean(1)        // false
+```
+
+### `isNull(val)`
+Check if value is null.
+```javascript
+isNull(null)        // true
+isNull(undefined)   // false
+```
+
+### `isUndefined(val)`
+Check if value is undefined.
+```javascript
+isUndefined(undefined)  // true
+isUndefined(null)       // false
+```
+
+### `isNil(val)`
+Check if value is null or undefined.
+```javascript
+isNil(null)         // true
+isNil(undefined)    // true
+isNil(0)            // false
+```
+
+### `isFunction(val)`
+Check if value is a function.
+```javascript
+isFunction(() => {})    // true
+isFunction(42)          // false
+```
+
+### `isObject(val)`
+Check if value is a plain object (not array).
+```javascript
+isObject({})        // true
+isObject([])        // false
+```
+
+### `isDate(val)`
+Check if value is a valid date.
+```javascript
+isDate(new Date())  // true
+isDate('2026-01-01') // false
+```
+
+### `isEmail(val)`
+Check if value is a valid email address.
+```javascript
+isEmail('user@example.com')  // true
+isEmail('invalid')           // false
+```
+
+### `isEmpty(val)`
+Check if value is empty (null, undefined, empty string, empty array, or empty object).
+```javascript
+isEmpty('')         // true
+isEmpty([])         // true
+isEmpty('hello')    // false
+```
+
+### `hasProperty(obj, prop)`
+Check if object has own property (not inherited).
+```javascript
+hasProperty({ name: 'Alice' }, 'name')    // true
+hasProperty({ name: 'Alice' }, 'toString') // false
+```
+
+### `isValidUrl(url)`
+Check if a string is a valid URL with HTTP or HTTPS protocol.
+```javascript
+isValidUrl('https://example.com')    // true
+isValidUrl('ftp://example.com')      // false
+isValidUrl('not-a-url')              // false
+```
+
+### `isAbsoluteUrl(url)`
+Check if a URL string is absolute (starts with http://, https://, or //).
+```javascript
+isAbsoluteUrl('https://example.com')  // true
+isAbsoluteUrl('//cdn.example.com')    // true
+isAbsoluteUrl('/path/to/resource')    // false
+```
+
+---
+
+## String Utilities (`src/string.js`)
+
+Text manipulation and analysis functions.
+
+### `truncate(text, wordLimit)`
+Truncates text to a specified word count, respecting word boundaries.
+```javascript
+truncate('Hello world this is a test', 3)  // 'Hello world this...'
+```
+
+### `stripTags(s)`
+Removes all HTML tags from a string.
+```javascript
+stripTags('<p>Hello <b>world</b></p>')  // 'Hello world'
+```
+
+### `escapeHTML(s)`
+Escapes HTML special characters to their entity equivalents.
+```javascript
+escapeHTML('<script>alert("xss")</script>')
+// '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'
+```
+
+### `unescapeHTML(s)`
+Unescapes HTML entities back to their original characters.
+```javascript
+unescapeHTML('&lt;hello&gt;')  // '<hello>'
+```
+
+### `ucfirst(s)`
+Uppercases the first character of a string and lowercases the rest.
+```javascript
+ucfirst('hello WORLD')  // 'Hello world'
+```
+
+### `ucwords(s)`
+Uppercases the first character of each word in a string.
+```javascript
+ucwords('hello world')  // 'Hello World'
+```
+
+### `stripAccent(s)`
+Removes accents and diacritical marks from characters.
+```javascript
+stripAccent('café résumé')  // 'cafe resume'
+```
+
+### `slugify(s, delimiter)`
+Converts a string into a URL-friendly slug.
+```javascript
+slugify('Hello World!')           // 'hello-world'
+slugify('Héllo Wörld', '_')       // 'hello_world'
+```
+
+### `getSentences(text, lang)`
+Splits text into sentences using Intl.Segmenter.
+```javascript
+getSentences('Hello world. How are you?')
+// ['Hello world.', 'How are you?']
+```
+
+### `getArrayOfWords(text, lang)`
+Extracts words from text using Intl.Segmenter.
+```javascript
+getArrayOfWords('Hello, world!')  // ['Hello', 'world']
+```
+
+### `getWordCount(text)`
+Counts words in text.
+```javascript
+getWordCount('Hello world')  // 2
+```
+
+### `findWordsIn(text, words)`
+Finds specific words within a text.
+```javascript
+findWordsIn('Hello world', ['hello', 'foo'])  // ['hello']
+```
+
+### `findWordsInWithRegExp(text, words)`
+Finds words using RegExp (fallback method).
+```javascript
+findWordsInWithRegExp('Hello world', ['hello'])  // ['hello']
+```
+
+### `getWordMap(text)`
+Creates a frequency map of word occurrences.
+```javascript
+getWordMap('hello world hello')  // { hello: 2, world: 1 }
+```
+
+### `getTTR(text, imgcount, wordsPerMinute)`
+Calculates Time To Read (TTR) in minutes.
+```javascript
+getTTR('Hello world', 0)  // 1 (minute)
+```
+
+---
+
+## Random Utilities (`src/random.js`)
+
+Cryptographically secure random generation using `crypto.getRandomValues()`.
+
+### `genid(len, prefix)`
+Generates a cryptographically secure random ID string.
+```javascript
+genid()              // 'aB3xY9kL2mN5pQ7rS8tU0vW1xY2zA3bC' (32 chars)
+genid(16)            // 'kL2mN5pQ7rS8tU0v' (16 chars)
+genid(16, 'user_')   // 'user_aB3xY9kL2mN5p' (prefix included in length)
+```
+
+### `randomInt(max)`
+Generates a cryptographically secure random integer from 0 to max (inclusive).
+```javascript
+randomInt(100)       // 0-100
+randomInt(1)         // 0 or 1
+randomInt(1000000)   // 0-1000000
+```
+
+---
+
+## Date Utilities (`src/date.js`)
+
+Date formatting and time calculations.
+
+### `getTime(t)`
+Returns timestamp in milliseconds.
+```javascript
+getTime()                    // current timestamp
+getTime('2026-01-01')        // timestamp for date
+getTime(new Date())          // timestamp from Date object
+```
+
+### `getIsoDateTime(t)`
+Returns ISO 8601 datetime string.
+```javascript
+getIsoDateTime()             // '2026-01-03T20:34:28.000Z'
+```
+
+### `formatDateISO(date)`
+Returns date in YYYY-MM-DD format.
+```javascript
+formatDateISO(new Date())    // '2026-01-03'
+```
+
+### `formatDate(input, locale, options)`
+Formats date with locale support.
+```javascript
+formatDate(new Date(), 'en')     // 'Jan 3, 2026, 8:34:28 PM'
+formatDate(new Date(), 'vi')     // '20:34:28, 3 thg 1, 2026'
+formatDate(new Date(), 'ja')     // '2026/1/3 20:34:28'
+```
+
+### `sec2dur(seconds)`
+Converts seconds to duration string.
+```javascript
+sec2dur(3661)    // '1h 1m 1s'
+sec2dur(90)      // '1m 30s'
+```
+
+### `getDuration(begin, end)`
+Returns duration string between two timestamps.
+```javascript
+getDuration(Date.now() - 5000)  // '5s'
+```
+
+### `formatRelativeTime(input, locale, justNowText)`
+Formats relative time (e.g., "5 minutes ago").
+```javascript
+formatRelativeTime(Date.now() - 300000, 'en')  // '5 minutes ago'
+formatRelativeTime(Date.now() - 300000, 'vi')  // '5 phút trước'
+```
+
+---
+
+## Array Utilities (`src/array.js`)
+
+Array manipulation and transformation functions.
+
+### `unique(arr)`
+Removes duplicate elements from an array.
+```javascript
+unique([1, 2, 2, 3, 3])  // [1, 2, 3]
+```
+
+### `sort(arr, sorting)`
+Sorts an array (does not modify original).
+```javascript
+sort([3, 1, 4, 1, 5])              // [1, 1, 3, 4, 5]
+sort([3, 1, 4], (a, b) => b - a)   // [4, 3, 1]
+```
+
+### `sortBy(arr, order, key)`
+Sorts array of objects by property.
+```javascript
+sortBy([{ age: 3 }, { age: 1 }], 1, 'age')
+// [{ age: 1 }, { age: 3 }]
+```
+
+### `shuffle(arr)`
+Randomly shuffles array elements (Fisher-Yates).
+```javascript
+shuffle([1, 2, 3, 4, 5])  // e.g., [3, 1, 5, 2, 4]
+```
+
+### `pick(arr, count)`
+Randomly picks N elements from an array.
+```javascript
+pick([1, 2, 3, 4, 5], 2)  // e.g., [3, 5]
+```
+
+### `chunk(arr, size)`
+Splits array into chunks.
+```javascript
+chunk([1, 2, 3, 4, 5], 2)  // [[1, 2], [3, 4], [5]]
+```
+
+### `flatten(arr, depth)`
+Flattens nested array to specified depth.
+```javascript
+flatten([1, [2, [3, 4]]])       // [1, 2, [3, 4]]
+flatten([1, [2, [3, 4]]], 2)    // [1, 2, 3, 4]
+```
+
+### `groupBy(arr, key)`
+Groups array elements by property or function.
+```javascript
+groupBy([{ role: 'admin' }, { role: 'user' }], 'role')
+// { admin: [{ role: 'admin' }], user: [{ role: 'user' }] }
+```
+
+### `first(arr, n)`
+Gets first n elements.
+```javascript
+first([1, 2, 3, 4, 5], 2)  // [1, 2]
+```
+
+### `last(arr, n)`
+Gets last n elements.
+```javascript
+last([1, 2, 3, 4, 5], 2)  // [4, 5]
+```
+
+### `compact(arr)`
+Removes all falsy values.
+```javascript
+compact([0, 1, false, 2, '', null])  // [1, 2]
+```
+
+### `difference(arr1, arr2)`
+Gets elements in first array but not in second.
+```javascript
+difference([1, 2, 3, 4], [2, 3])  // [1, 4]
+```
+
+### `intersection(arr1, arr2)`
+Gets elements present in both arrays.
+```javascript
+intersection([1, 2, 3], [2, 3, 4])  // [2, 3]
+```
+
+### `zip(arr1, arr2)`
+Combines two arrays into pairs.
+```javascript
+zip([1, 2], ['a', 'b'])  // [[1, 'a'], [2, 'b']]
+```
+
+---
+
+## Object Utilities (`src/object.js`)
+
+Object manipulation functions.
+
+### `clone(val)`
+Creates a deep copy using structuredClone.
+```javascript
+clone({ a: 1, b: { c: 2 } })  // { a: 1, b: { c: 2 } }
+clone([1, [2, [3]]])          // [1, [2, [3]]]
+```
+
+### `copies(source, dest, matched, excepts)`
+Copies properties from source to destination with deep cloning.
+```javascript
+copies({ a: 1, b: 2 }, {})                    // { a: 1, b: 2 }
+copies({ a: 1, b: 2 }, { a: 10 }, true)       // { a: 1 } (only matching)
+copies({ a: 1, b: 2 }, {}, false, ['b'])      // { a: 1 } (except b)
+```
+
+---
+
+## Functional Utilities (`src/fp.js`)
+
+Functional programming utilities.
+
+### `curry(fn)`
+Curries a function.
+```javascript
+const add = (a, b) => a + b
+const curriedAdd = curry(add)
+curriedAdd(5)(3)  // 8
+```
+
+### `compose(...fns)`
+Composes functions right-to-left.
+```javascript
+const add1 = x => x + 1
+const mul2 = x => x * 2
+const fn = compose(mul2, add1)
+fn(5)  // 12 (5 + 1 = 6, 6 * 2 = 12)
+```
+
+### `pipe(...fns)`
+Composes functions left-to-right (pipeline).
+```javascript
+const add1 = x => x + 1
+const mul2 = x => x * 2
+const fn = pipe(add1, mul2)
+fn(5)  // 12 (5 + 1 = 6, 6 * 2 = 12)
+```
+
+### `filter(fn)`
+Alias for creating filter functions (used with compose/pipe).
+
+### `map(fn)`
+Alias for creating map functions (used with compose/pipe).
+
+---
+
+## Maybe Utilities (`src/maybe.js`)
+
+Safe null/undefined handling with method chaining.
+
+### `maybe(val)`
+Creates a Maybe instance for safe null handling.
+```javascript
+// Basic usage
+maybe(5)
+  .map(x => x + 5)
+  .map(x => x * 2)
+  .value()  // 20
+
+// Handle null safely
+maybe(null)
+  .map(x => x + 5)  // Skipped
+  .orElse(() => 0)
+  .value()  // 0
+
+// Conditional filtering
+maybe(user)
+  .filter(u => u.isActive)
+  .map(u => u.email)
+  .orElse(() => 'default@example.com')
+  .value()
+```
+
+### Maybe Methods
+
+- **`.isNil()`** - Check if value is null/undefined
+- **`.value()`** - Extract the wrapped value
+- **`.map(fn)`** - Transform value if not nil
+- **`.filter(fn)`** - Filter value, returns null if predicate is false
+- **`.when(fn)`** - Alias for filter
+- **`.orElse(fn)`** - Provide default if nil
+- **`.getOrElse(fn)`** - Alias for orElse
+- **`.tap(fn)`** - Side effect without transforming
+- **`.toArray()`** - Convert to array (empty if nil)
+- **`.inspect()`** - String representation for debugging
+
+---
+
+## Number Utilities (`src/number.js`)
+
+Number formatting functions.
+
+### `formatBytes(bytes, decimals)`
+Converts bytes to human-readable size string.
+```javascript
+formatBytes(0)                    // '0 Bytes'
+formatBytes(1024)                 // '1 KiB'
+formatBytes(1536)                 // '1.5 KiB'
+formatBytes(1048576)              // '1 MiB'
+formatBytes(1234567890)           // '1.15 GiB'
+formatBytes(1536, 0)              // '2 KiB'
+formatBytes(1234567890, 4)        // '1.1498 GiB'
+```
+
+### `formatNumber(x, decimals)`
+Formats number with fixed decimal places.
+```javascript
+formatNumber(123)                 // '123.00'
+formatNumber(123.456)             // '123.46'
+formatNumber(123.456, 3)          // '123.456'
+formatNumber(1000, 0)             // '1000'
+formatNumber('45.678', 2)         // '45.68'
+```
+
+---
+
+## Similarity Utilities (`src/similarity.js`)
+
+String comparison and similarity functions.
+
+### `tokenize(text)`
+Tokenizes text into lowercase words.
+```javascript
+tokenize('Hello World!')  // ['hello', 'world']
+```
+
+### `toBow(tokens)`
+Creates bag-of-words frequency map.
+```javascript
+toBow(['hello', 'world', 'hello'])  // { hello: 2, world: 1 }
+```
+
+### `cosineSimilarity(bow1, bow2)`
+Calculates cosine similarity between two bag-of-words.
+```javascript
+const bow1 = { hello: 1, world: 1 }
+const bow2 = { hello: 1, foo: 1 }
+cosineSimilarity(bow1, bow2)  // ~0.5
+```
+
+### `compareTwoStrings(first, second)`
+Compares two strings and returns similarity score (0-1).
+```javascript
+compareTwoStrings('hello', 'hello')      // ~1
+compareTwoStrings('hello', 'world')      // 0
+compareTwoStrings('hello', 'hallo')      // ~0.5
+```
+
+### `isSimilar(first, second, threshold)`
+Checks if two strings are similar above threshold.
+```javascript
+isSimilar('hello', 'hallo', 0.5)  // true
+isSimilar('hello', 'world', 0.5)  // false
+```
+
+---
+
+## Store Utilities (`src/memstore.js`)
+
+In-memory key-value store with TTL support.
+
+### `memstore(defaultTtl)`
+Creates an in-memory store with optional default TTL (in seconds).
+```javascript
+// Create store with 5-minute default TTL
+const cache = memstore(300)
+
+// Store data
+cache.set('user:1', { name: 'John' })
+cache.save('user:1', { name: 'John' })  // alias
+
+// Retrieve data
+const user = cache.get('user:1')
+const user2 = cache.load('user:1')  // alias
+
+// Check existence
+cache.has('user:1')  // true
+
+// Delete
+cache.del('user:1')
+
+// Clear all
+cache.clear()
+
+// Get size (excludes expired)
+cache.size()
+
+// Iterate entries
+for (const [key, value] of cache.entries()) {
+  console.log(key, value)
+}
+
+// Store with custom TTL
+cache.set('session:abc', data, 3600)  // 1 hour
+```
+
+### Memstore Methods
+
+- **`.set(key, value, ttl)`** - Store value with optional TTL
+- **`.get(key)`** - Retrieve value (null if not found or expired)
+- **`.has(key)`** - Check if key exists and is valid
+- **`.del(key)`** - Delete key
+- **`.clear()`** - Clear all entries
+- **`.size()`** - Get count of valid entries
+- **`.entries()`** - Iterate over valid entries
+- **`.save(key, value, ttl)`** - Alias for set
+- **`.load(key)`** - Alias for get
+
+---
+
+## Utility (`src/defineProp.js`)
+
+Property definition helper.
+
+### `defineProp(ob, key, val, config)`
+Defines a property on an object with configurable options.
+```javascript
+const obj = {}
+defineProp(obj, 'name', 'Alice', {
+  writable: true,
+  configurable: true,
+  enumerable: true
+})
+```
+
+---
+
+## Common Patterns
+
+### Safe Property Access with Maybe
+```javascript
+import { maybe } from '@pwshub/bellajs'
+
+// Without maybe
+let email
+if (user && user.profile && user.profile.contact) {
+  email = user.profile.contact.email
+} else {
+  email = 'default@example.com'
+}
+
+// With maybe
+const email = maybe(user)
+  .map(u => u.profile)
+  .map(p => p.contact)
+  .map(c => c.email)
+  .orElse(() => 'default@example.com')
+  .value()
+```
+
+### Function Pipelines
+```javascript
+import { pipe, compose } from '@pwshub/bellajs'
+
+// Left-to-right pipeline
+const processUser = pipe(
+  user => user.profile,
+  profile => profile.settings,
+  settings => settings.theme
+)
+
+// Right-to-left composition
+const analyze = compose(
+  result => result.toUpperCase(),
+  data => data.join('-'),
+  items => items.filter(x => x.active)
+)
+```
+
+### Caching Without Redis
+```javascript
+import { memstore } from '@pwshub/bellajs'
+
+const cache = memstore(300)  // 5-minute default TTL
+
+// Store and retrieve
+cache.set('key', value)
+const data = cache.get('key')
+
+// Store with custom TTL
+cache.set('key', value, 3600)  // 1 hour
+```
+
+### Generate Secure IDs
+```javascript
+import { genid } from '@pwshub/bellajs'
+
+genid()              // Full 32-char ID
+genid(16)            // 16-char ID
+genid(16, 'user_')   // 'user_xYz123...'
+```
+
+### Format File Sizes
+```javascript
+import { formatBytes, formatNumber } from '@pwshub/bellajs'
+
+formatBytes(1234567890)  // '1.15 GiB'
+formatNumber(99.9)       // '99.90'
+```
+
+### Validate URLs
+```javascript
+import { isValidUrl, isAbsoluteUrl } from '@pwshub/bellajs'
+
+isValidUrl('https://example.com')    // true
+isAbsoluteUrl('//cdn.example.com')   // true
+```
+
+---
+
+## Platform Support
+
+- **Node.js** 22+
+- **Bun** 1.0+
+- **Deno** 2.0+
+- **Browsers** - All modern browsers (Chrome 11+, Firefox 21+, Safari 5.1+, Edge)
+
+## Security Notes
+
+### Random Functions
+- Uses `crypto.getRandomValues()` - cryptographically secure
+- Safe for: Session IDs, CSRF tokens, random identifiers, nonces

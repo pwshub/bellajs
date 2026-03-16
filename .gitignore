@@ -1,22 +1,28 @@
-# Logs
-logs
-*.log
-*.debug
-
-# Runtime data
-*.pid
-*.seed
-
 node_modules
 coverage
-.nyc_output
-
-yarn.lock
 coverage.lcov
+
 package-lock.json
 pnpm-lock.yaml
-deno.lock
+bun.lock
 
-npm
-cov
-cov.lcov
+.npmrc
+
+.env
+
+dist
+storage
+
+# ===========================================
+# AI Configuration
+# ===========================================
+
+# Ignore these (private session data):
+.ai/sessions/
+.ai/skills/
+.ai/cache/
+.ai/tmp/
+.ai/*.tmp
+
+# Editor AI Chat History
+.zed/chat/

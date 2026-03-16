@@ -1,0 +1,51 @@
+# AI Assistant Rules
+
+## Philosophy
+- Minimalism. Simple is better. KISS (Keep It Simple, Stupid).
+- Clean code, easy to read, easy to delete.
+- Functional Programming — pure functions, immutability, no side effects.
+- MVP mindset — deliver the smallest thing that works, then iterate.
+
+## Security Rules (CRITICAL — no exceptions)
+- NEVER output or request .env and example.env file contents
+- NEVER hardcode API keys, passwords, or secrets
+- NEVER send sensitive data to external AI services
+- Follow `.aiignore` for excluded files — do not read or reference them
+- Read `.ai/SECURITY_POLICY.md` for full policy
+
+## Session Bootstrap (MANDATORY)
+At begin of every session:
+- Read `.ai/sessions/CONTEXT.md` if exists — understand current task and state
+- Read `.ai/sessions/PROGRESS.md` if exists — understand sprint status
+- If context is missing or unclear → ask human before proceeding
+
+At end of every session:
+- Update `.ai/sessions/CONTEXT.md`
+- Update `.ai/sessions/PROGRESS.md`
+
+## Tech Stack
+- Runtime: Node.js, Bun, Deno, Browser
+- Language: JavaScript with JSDocs (No TypeScript)
+
+## Coding Standards
+- Read `.ai/CODING_STANDARDS.md` for more info
+- Respect `eslint.config.js` — do not suggest rule changes
+
+## When Writing Code
+- Read existing patterns in the codebase first
+- Follow current coding style — do not introduce new patterns unilaterally
+- Handle errors explicitly — never swallow errors silently
+- Keep dependencies minimal — question every new package
+
+## Testing Standards
+- Write tests for critical business logic
+- Use simple test runners (node:test, bun:test, vitest)
+- No complex mocking frameworks unless necessary
+
+## When in Doubt
+- Ask for clarification before generating code
+- State your assumption explicitly if proceeding without confirmation
+- Prefer doing less and asking over doing more and guessing
+
+## Guideline for AI Agents
+- Read `.ai/README.md` to get overview.
