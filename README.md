@@ -25,6 +25,22 @@ pnpm install @pwshub/bellajs
 bun add @pwshub/bellajs
 ```
 
+### Browser Usage
+
+BellaJS works directly in browsers via CDN. Load it from [esm.sh](https://esm.sh/@pwshub/bellajs) or [unpkg.com](https://unpkg.com/@pwshub/bellajs):
+
+```html
+<script type="module">
+import { genid } from "https://esm.sh/@pwshub/bellajs";
+// or from unpkg.com
+import { genid } from "https://unpkg.com/@pwshub/bellajs";
+
+for (let i = 0; i < 5; i++) {
+  console.log(genid());
+}
+</script>
+```
+
 ## Quick Start
 
 ```javascript
@@ -76,8 +92,9 @@ formatRelativeTime(Date.now() - 300000, 'ja') // "5 分前"
 | **[Similarity](docs/similarity.md)** | 5 functions | String comparison and similarity |
 | **[Store](docs/store.md)** | 1 function | In-memory key-value store with TTL |
 | **[Utility](docs/utility.md)** | 1 function | Property definition helper |
+| **[Rating](docs/rating.md)** | 6 functions | Wilson Score, Bayesian Average, time-decay ratings |
 
-### Function Count: **64 total**
+### Function Count: **70 total**
 
 ## Security Notes
 

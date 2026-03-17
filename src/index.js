@@ -33,3 +33,6 @@ export * from './maybe.js'
 
 // Export number utilities
 export * from './number.js'
+
+// Export rating utilities as a submodule
+export { rating } from './rating.js'

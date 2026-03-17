@@ -8,27 +8,26 @@
 
 ## Security Rules (CRITICAL — no exceptions)
 - NEVER output or request .env and example.env file contents
-- NEVER hardcode API keys, passwords, or secrets
+- NEVER hardcode API credentials, secret tokens, private keys or passwords in source code
 - NEVER send sensitive data to external AI services
-- Follow `.aiignore` for excluded files — do not read or reference them
-- Read `.ai/SECURITY_POLICY.md` for full policy
-
-## Session Bootstrap (MANDATORY)
-At begin of every session:
-- Read `.ai/sessions/CONTEXT.md` if exists — understand current task and state
-- Read `.ai/sessions/PROGRESS.md` if exists — understand sprint status
-- If context is missing or unclear → ask human before proceeding
-
-At end of every session:
-- Update `.ai/sessions/CONTEXT.md`
-- Update `.ai/sessions/PROGRESS.md`
-
-## Tech Stack
-- Runtime: Node.js, Bun, Deno, Browser
-- Language: JavaScript with JSDocs (No TypeScript)
+- Follow `.aiignore` and `.gitignore` for excluded files — do not read or reference them
+- When asking for help, sanitize data (replace real IDs, emails, tokens with placeholders)
+- Do not log sensitive information
 
 ## Coding Standards
-- Read `.ai/CODING_STANDARDS.md` for more info
+- No semicolons
+- No unused variable
+- camelCase for variables and functions
+- Single quotes for strings
+- 2 spaces for indentation
+- Always use ESM syntax (import/export)
+- Arrow functions preferred, max 3 parameters
+- No generator function
+- No class and OOP stuff
+- Functional programming paradigm (pure functions, immutability)
+- Add JSDocs comments before functions and important variables
+- Comments must be in American English
+- Never use Vietnamese or Chinese in source code
 - Respect `eslint.config.js` — do not suggest rule changes
 
 ## When Writing Code
@@ -38,14 +37,120 @@ At end of every session:
 - Keep dependencies minimal — question every new package
 
 ## Testing Standards
-- Write tests for critical business logic
+- Write tests for critical business logic, all error cases
 - Use simple test runners (node:test, bun:test, vitest)
 - No complex mocking frameworks unless necessary
+- Tests live alongside source: `[module].test.js` next to `[module].js`
 
 ## When in Doubt
 - Ask for clarification before generating code
 - State your assumption explicitly if proceeding without confirmation
 - Prefer doing less and asking over doing more and guessing
 
-## Guideline for AI Agents
-- Read `.ai/README.md` to get overview.
+## Tech Stack
+- Runtime: Node.js, Bun, Deno, Browser
+- Language: JavaScript with JSDocs (No TypeScript)
+
+### Agent Skills References
+
+Reference these URLs when working on related topics:
+
+- Hono: https://hono.dev/llms-full.txt
+- Bun: https://bun.sh/llms-full.txt
+- Redis: https://redis.io/llms.txt
+- Meilisearch: https://www.meilisearch.com/llms-full.txt
+
+## Context Management
+
+### Purpose
+Capture problem-solving state when work is interrupted or handed off between AI agents.
+Only used when:
+- Problem cannot be completed in one session
+- Work is interrupted by higher priority tasks
+- Switching between AI agents (e.g., Gemini → Qwen)
+- Complex problem requires thinking state preservation
+
+### Storage Location
+- All session files stored in `.sessions/` folder at project root
+
+### File Naming Convention
+- Format: `YYYYMMDD_HHMM.md` (24-hour format, use UTC timezone)
+- Example: `20260317_0750.md` (Saved at 2026-03-17T07:50:00.184Z)
+
+### When to Save
+Save context ONLY when user explicitly requests:
+- "Save context"
+- "Save session"
+- "End session"
+- "Checkpoint"
+- "Handoff to [agent name]"
+
+Do NOT save automatically. User must initiate.
+
+### Problem Solving Flow
+Each session file should capture state within these steps:
+1. ISSUE IDENTIFIED
+2. SOLUTION DISCUSSION
+3. SOLUTION DECIDED
+4. IMPLEMENTATION
+5. TEST
+6. REVIEW
+7. DEPLOYMENT
+8. ISSUE RESOLVED
+
+### Session File Template
+
+Each session file must follow this structure:
+
+```md
+# Session Context
+
+## Metadata
+- Saved: YYYY-MM-DD HH:MM
+- Issue: [Link to Git issue or brief description]
+- Phase: [1-Issue | 2-Discussion | 3-Decided | 4-Implementation | 5-Test | 6-Review | 7-Deployment | 8-Resolved]
+
+## Problem Statement
+[What problem are we solving? Why does it matter?]
+
+## Current State
+[Where are we in the problem solving flow?]
+
+## Explored Solutions
+| Solution | Pros | Cons | Status |
+|----------|------|------|--------|
+| [Option A] | [Pros] | [Cons] | [Accepted | Rejected | Pending] |
+| [Option B] | [Pros] | [Cons] | [Accepted | Rejected | Pending] |
+
+## Decisions Made
+- [Decision 1] — Rationale: [Why]
+- [Decision 2] — Rationale: [Why]
+
+## Pending Questions
+- [ ] [Question 1] — Blocked by: [What/Who]
+- [ ] [Question 2] — Blocked by: [What/Who]
+
+## Unresolved Thinking
+[What was being considered but not yet decided? This is critical for handoff.]
+
+## Completed Work
+- [ ] [Item 1]
+- [ ] [Item 2]
+
+## Next Steps
+- [ ] [Step 1]
+- [ ] [Step 2]
+
+## Relevant Files
+- [path/to/file1]
+- [path/to/file2]
+
+## Git References
+- Issue: #[number] or [URL]
+- Related commits: [commit hashes if any]
+- Branch: [branch name]
+
+---
+
+*Generated by [YOUR_CODE_NAME] at [ISO_DATETIME]*
+```

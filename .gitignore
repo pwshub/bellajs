@@ -18,11 +18,7 @@ storage
 # ===========================================
 
 # Ignore these (private session data):
-.ai/sessions/
-.ai/skills/
-.ai/cache/
-.ai/tmp/
-.ai/*.tmp
+.sessions/
 
 # Editor AI Chat History
 .zed/chat/
