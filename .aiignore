@@ -12,6 +12,4 @@ dist
 storage
 
 # AI Session Files (Private Context)
-.ai/sessions/
-.ai/skills/
-.ai/cache/
+.sessions

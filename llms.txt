@@ -545,6 +545,93 @@ formatNumber('45.678', 2)         // '45.68'
 
 ---
 
+## Rating Utilities (`src/rating.js`)
+
+Rating and scoring functions using Wilson Score Equation, Bayesian Average, and time-decay weighting.
+
+### `score(p, n)`
+Calculates Wilson Score for positive/negative rating systems.
+```javascript
+score(80, 20)       // 0.71 (80 likes, 20 dislikes)
+score(0, 100)       // 0
+score(100, 0)       // 0.96
+score(500, 500)     // 0.47
+```
+
+### `rate(ratings)`
+Calculates Wilson Score for 5+ level rating systems.
+```javascript
+rate([134055, 57472, 143135, 365957, 1448459])  // 0.84
+rate([0, 0, 0, 0, 0])                           // 0
+rate([5, 4, 3, 2, 1])                           // 0.15
+```
+
+### `average(ratings)`
+Calculates simple average for 5+ level rating systems.
+```javascript
+average([134055, 57472, 143135, 365957, 1448459])  // 4.4
+average([0, 0, 0, 0, 0])                           // 0
+average([5, 4, 3, 2, 1])                           // 2.3
+```
+
+### `bayesianAverage(ratings, prior, priorMean)`
+Calculates Bayesian Average rating. Balances item average with global average.
+```javascript
+// Many ratings (close to true average)
+bayesianAverage([0, 0, 0, 0, 1000], 5, 3)  // 4.99
+
+// Few ratings (pulled toward prior mean of 3)
+bayesianAverage([0, 0, 0, 0, 2], 5, 3)     // 3.57
+
+// No ratings
+bayesianAverage([0, 0, 0, 0, 0], 5, 3)     // 0
+
+// Higher prior = more conservative
+bayesianAverage([0, 0, 0, 0, 10], 10, 3)   // 4.0
+```
+
+### `weightedRating(ratings, halfLife)`
+Calculates time-decay weighted rating. Recent ratings weigh more.
+```javascript
+const ratings = [
+  { rating: 5, timestamp: Date.now() - 1000 },      // 1 second ago
+  { rating: 3, timestamp: Date.now() - 3600000 },   // 1 hour ago
+  { rating: 4, timestamp: Date.now() - 86400000 },  // 24 hours ago
+]
+weightedRating(ratings, 24)  // ~4.3 (recent 5-star weighs more)
+```
+
+### `viralScore(options)`
+Calculates viral/trending score for time-sensitive ranking.
+```javascript
+// Post with 1000 views, 4.5 rating, posted 2 hours ago
+viralScore({
+  engagement: 1000,
+  rating: 4.5,
+  ageInHours: 2,
+  windowSize: 24
+})  // 4153.85
+
+// New viral vs old popular
+const newViral = viralScore({
+  engagement: 5000,
+  rating: 4.5,
+  ageInHours: 3,
+  windowSize: 24
+})  // 20000
+
+const oldPopular = viralScore({
+  engagement: 10000,
+  rating: 4.5,
+  ageInHours: 72,
+  windowSize: 24
+})  // 11250
+
+newViral > oldPopular  // true (new viral ranks higher)
+```
+
+---
+
 ## Similarity Utilities (`src/similarity.js`)
 
 String comparison and similarity functions.
@@ -735,6 +822,34 @@ import { isValidUrl, isAbsoluteUrl } from '@pwshub/bellajs'
 
 isValidUrl('https://example.com')    // true
 isAbsoluteUrl('//cdn.example.com')   // true
+```
+
+### Rating Systems
+```javascript
+import { rating } from '@pwshub/bellajs'
+
+const { score, rate, bayesianAverage, weightedRating, viralScore } = rating
+
+// Wilson Score for thumbs up/down
+score(80, 20)  // 0.71
+
+// Bayesian Average for product ranking
+bayesianAverage([0, 0, 0, 0, 100], 5, 3)  // 4.76
+
+// Time-weighted rating (recent reviews matter more)
+const reviews = [
+  { rating: 5, timestamp: Date.now() - 1000 },
+  { rating: 2, timestamp: Date.now() - 86400000 },
+]
+weightedRating(reviews, 24)  // ~4.5
+
+// Viral score for trending content
+viralScore({
+  engagement: 5000,
+  rating: 4.5,
+  ageInHours: 3,
+  windowSize: 24
+})  // 20000
 ```
 
 ---

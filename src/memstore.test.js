@@ -94,86 +94,74 @@ describe('memstore - basic operations', () => {
 })
 
 describe('memstore - TTL (time-to-live)', () => {
-  it('expires key after TTL', () => {
+  it('expires key after TTL', (t) => {
+    t.mock.timers.enable({ apis: ['setTimeout', 'Date'] })
+
     const store = memstore()
     store.set('key1', 'value1', 1) // 1 second TTL
     assert.strictEqual(store.get('key1'), 'value1')
 
-    // Wait for expiration
-    const start = Date.now()
-    while (Date.now() - start < 1100) {
-      // Busy wait for 1.1 seconds
-    }
+    t.mock.timers.tick(1100)
 
     assert.strictEqual(store.get('key1'), null)
   })
 
-  it('does not expire key with TTL -1', () => {
+  it('does not expire key with TTL -1', (t) => {
+    t.mock.timers.enable({ apis: ['setTimeout', 'Date'] })
+
     const store = memstore()
     store.set('key1', 'value1', -1) // No expiration
 
-    // Wait a bit
-    const start = Date.now()
-    while (Date.now() - start < 100) {
-      // Busy wait for 100ms
-    }
+    t.mock.timers.tick(100)
 
     assert.strictEqual(store.get('key1'), 'value1')
   })
 
-  it('uses default TTL when not specified', () => {
+  it('uses default TTL when not specified', (t) => {
+    t.mock.timers.enable({ apis: ['setTimeout', 'Date'] })
+
     const store = memstore(1) // 1 second default
     store.set('key1', 'value1') // Uses default TTL
     assert.strictEqual(store.get('key1'), 'value1')
 
-    // Wait for expiration
-    const start = Date.now()
-    while (Date.now() - start < 1100) {
-      // Busy wait for 1.1 seconds
-    }
+    t.mock.timers.tick(1100)
 
     assert.strictEqual(store.get('key1'), null)
   })
 
-  it('overrides default TTL with specific TTL', () => {
+  it('overrides default TTL with specific TTL', (t) => {
+    t.mock.timers.enable({ apis: ['setTimeout', 'Date'] })
+
     const store = memstore(1) // 1 second default
     store.set('key1', 'value1', 10) // Override with 10 seconds
     assert.strictEqual(store.get('key1'), 'value1')
 
-    // Wait 1.5 seconds (would have expired with default)
-    const start = Date.now()
-    while (Date.now() - start < 1500) {
-      // Busy wait
-    }
+    t.mock.timers.tick(1500)
 
     assert.strictEqual(store.get('key1'), 'value1')
   })
 
-  it('has() returns false for expired key', () => {
+  it('has() returns false for expired key', (t) => {
+    t.mock.timers.enable({ apis: ['setTimeout', 'Date'] })
+
     const store = memstore()
     store.set('key1', 'value1', 1)
     assert.strictEqual(store.has('key1'), true)
 
-    // Wait for expiration
-    const start = Date.now()
-    while (Date.now() - start < 1100) {
-      // Busy wait
-    }
+    t.mock.timers.tick(1100)
 
     assert.strictEqual(store.has('key1'), false)
   })
 
-  it('size() does not count expired keys', () => {
+  it('size() does not count expired keys', (t) => {
+    t.mock.timers.enable({ apis: ['setTimeout', 'Date'] })
+
     const store = memstore()
     store.set('key1', 'value1', 1)
     store.set('key2', 'value2', 10) // Longer TTL
     assert.strictEqual(store.size(), 2)
 
-    // Wait for first key to expire
-    const start = Date.now()
-    while (Date.now() - start < 1100) {
-      // Busy wait
-    }
+    t.mock.timers.tick(1100)
 
     assert.strictEqual(store.size(), 1)
   })
@@ -191,16 +179,14 @@ describe('memstore - entries', () => {
     assert.ok(entries.some(([k, v]) => k === 'key2' && v === 'value2'))
   })
 
-  it('filters out expired entries', () => {
+  it('filters out expired entries', (t) => {
+    t.mock.timers.enable({ apis: ['setTimeout', 'Date'] })
+
     const store = memstore()
     store.set('key1', 'value1', 1)
     store.set('key2', 'value2', 10)
 
-    // Wait for first key to expire
-    const start = Date.now()
-    while (Date.now() - start < 1100) {
-      // Busy wait
-    }
+    t.mock.timers.tick(1100)
 
     const entries = [...store.entries()]
     assert.strictEqual(entries.length, 1)

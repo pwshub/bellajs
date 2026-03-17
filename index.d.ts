@@ -156,3 +156,15 @@ export function maybe<T = any>(val: T | null | undefined): Maybe<T>
 // Number utilities
 export function formatBytes(bytes: number, decimals?: number): string
 export function formatNumber(x?: number, d?: number): string
+
+// Rating utilities
+export interface RatingModule {
+  score(p?: number, n?: number): number
+  rate(rating?: number[]): number
+  average(rating?: number[]): number
+  bayesianAverage(rating?: number[], prior?: number, priorMean?: number): number
+  weightedRating(ratings?: Array<{ rating: number; timestamp: number }>, halfLife?: number): number
+  viralScore(options?: { engagement?: number; rating?: number; ageInHours?: number; windowSize?: number }): number
+}
+
+export const rating: RatingModule
