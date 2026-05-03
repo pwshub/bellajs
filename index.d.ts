@@ -21,7 +21,13 @@ export function isValidUrl(url?: string): boolean
 export function isAbsoluteUrl(url?: string): boolean
 
 // String utilities
+/** @deprecated Use truncateByWord instead */
 export function truncate(text: string, wordLimit?: number): string
+export function truncateByWord(text: string, wordLimit?: number): string
+export function truncateByChar(text: string, charLimit?: number): string
+export function truncateByGrapheme(text: string, charLimit?: number): string
+export function truncateByCodePoint(text: string, max?: number): string
+export function truncateByByte(text: string, maxBytes?: number): string
 export function stripTags(s: string): string
 export function escapeHTML(s: string): string
 export function unescapeHTML(s: string): string

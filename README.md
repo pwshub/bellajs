@@ -82,7 +82,7 @@ formatRelativeTime(Date.now() - 300000, 'ja') // "5 分前"
 | Module | Functions | Description |
 |--------|-----------|-------------|
 | **[Detection](docs/detection.md)** | 15 functions | Type checking utilities |
-| **[String](docs/string.md)** | 15 functions | Text manipulation and analysis |
+| **[String](docs/string.md)** | 20 functions | Text manipulation and analysis |
 | **[Random](docs/random.md)** | 2 functions | Cryptographically secure random generation |
 | **[Date](docs/date.md)** | 7 functions | Date formatting and time calculations |
 | **[Array](docs/array.md)** | 15 functions | Array utilities and transformations |
@@ -94,7 +94,7 @@ formatRelativeTime(Date.now() - 300000, 'ja') // "5 分前"
 | **[Utility](docs/utility.md)** | 1 function | Property definition helper |
 | **[Rating](docs/rating.md)** | 6 functions | Wilson Score, Bayesian Average, time-decay ratings |
 
-### Function Count: **70 total**
+### Function Count: **75 total**
 
 ## Security Notes
 
@@ -139,7 +139,8 @@ import {
   formatDate, 
   formatRelativeTime, 
   getWordCount,
-  truncate 
+  truncateByWord,
+  truncateByChar
 } from '@pwshub/bellajs'
 
 // Date formatting
@@ -158,8 +159,13 @@ getWordCount('Hello world')           // 2
 getWordCount('こんにちは世界')         // 2
 getWordCount('مرحبا بالعالم')         // 2
 
-// Truncate respecting word boundaries
-truncate('Hello world this is a test', 3)  // "Hello world this..."
+// Truncate by word count (respecting word boundaries)
+truncateByWord('Hello world this is a test', 3)  // "Hello world this..."
+
+// Truncate by character count (respecting grapheme clusters)
+truncateByChar('Hello world', 5)     // "Hello..."
+truncateByChar('こんにちは', 3)       // "こんに..."
+truncateByChar('👨‍👩‍👧‍👦abc', 3)      // "👨‍👩‍👧‍👦ab..."
 ```
 
 ### 🎲 Secure Random Generation
@@ -323,9 +329,9 @@ npm run lint:fix
 
 ## AI Agents
 
+- DeepSeek
 - Qwen Code
 - Google Gemini
-- DeepSeek
 
 ## License
 

@@ -152,9 +152,40 @@ isAbsoluteUrl('/path/to/resource')    // false
 Text manipulation and analysis functions.
 
 ### `truncate(text, wordLimit)`
-Truncates text to a specified word count, respecting word boundaries.
+Truncates text to a specified word count, respecting word boundaries. Deprecated — use `truncateByWord` instead.
 ```javascript
 truncate('Hello world this is a test', 3)  // 'Hello world this...'
+```
+
+### `truncateByWord(text, wordLimit)`
+Truncates text to a specified word count, respecting word boundaries.
+```javascript
+truncateByWord('Hello world this is a test', 3)  // 'Hello world this...'
+```
+
+### `truncateByChar(text, charLimit)`
+Truncates text to a specified character count, respecting grapheme clusters.
+```javascript
+truncateByChar('Hello world', 5)  // 'Hello...'
+truncateByChar('👨‍👩‍👧‍👦abc', 2)  // '👨‍👩‍👧‍👦...'
+```
+
+### `truncateByGrapheme(text, charLimit)`
+Alias for truncateByChar.
+
+### `truncateByCodePoint(text, max)`
+Truncates text to a specified number of Unicode code points. Safe for PostgreSQL VARCHAR.
+```javascript
+truncateByCodePoint('Hello world', 5)  // 'Hello'
+truncateByCodePoint('𝄞abc', 2)        // '𝄞a'
+```
+
+### `truncateByByte(text, maxBytes)`
+Truncates text to a specified number of UTF-8 bytes. Does not break multi-byte characters.
+```javascript
+truncateByByte('Hello world', 5)  // 'Hello'
+truncateByByte('café', 4)        // 'caf'
+truncateByByte('𝄞abc', 4)        // '𝄞'
 ```
 
 ### `stripTags(s)`

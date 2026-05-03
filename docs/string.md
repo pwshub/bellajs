@@ -21,19 +21,72 @@ import {
 
 ## Basic Transformations
 
-### `truncate(text, wordLimit)`
+### `truncateByWord(text, wordLimit)`
 
 Truncate text to specified word count, respecting word boundaries. Works with any language.
 
 ```javascript
-truncate('Hello world this is a test', 3)
+truncateByWord('Hello world this is a test', 3)
 // "Hello world this..."
 
-truncate('こんにちは 世界 これはテストです', 3)
+truncateByWord('こんにちは 世界 これはテストです', 3)
 // "こんにちは 世界 これ..."
 
-truncate('Short text', 10)
+truncateByWord('Short text', 10)
 // "Short text" (no truncation needed)
+```
+
+### `truncateByChar(text, charLimit)`
+
+Truncate text to specified character count, respecting grapheme clusters (emoji, multi-byte characters).
+
+```javascript
+truncateByChar('Hello world', 5)
+// "Hello..."
+
+truncateByChar('こんにちは', 3)
+// "こんにち..."
+
+truncateByChar('👨‍👩‍👧‍👦abc', 2)
+// "👨‍👩‍👧‍👦..."
+
+truncateByChar('Short', 10)
+// "Short" (no truncation needed)
+```
+
+### `truncateByGrapheme(text, charLimit)`
+
+Alias for `truncateByChar`. Truncates text by grapheme clusters.
+
+### `truncateByCodePoint(text, max)`
+
+Truncate text to a specified number of Unicode code points. Safe for PostgreSQL `VARCHAR` columns.
+
+```javascript
+truncateByCodePoint('Hello world', 5)
+// "Hello"
+
+truncateByCodePoint('𝄞abc', 2)
+// "𝄞a" (𝄞 is 1 code point)
+
+truncateByCodePoint('Hello', 10)
+// "Hello" (no truncation needed)
+```
+
+### `truncateByByte(text, maxBytes)`
+
+Truncate text to a specified number of UTF-8 bytes. Does not break multi-byte characters.
+Safe for `VARBINARY` columns and other byte-constrained storage.
+
+```javascript
+truncateByByte('Hello world', 5)
+// "Hello"
+
+truncateByByte('café', 4)
+// "caf" (é is 2 bytes, so it's excluded)
+
+truncateByByte('𝄞abc', 4)
+// "𝄞" (4 bytes)
 ```
 
 ### `stripTags(html)`

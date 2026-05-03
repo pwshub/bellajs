@@ -3,6 +3,11 @@ import assert from 'node:assert'
 
 import {
   truncate,
+  truncateByWord,
+  truncateByChar,
+  truncateByGrapheme,
+  truncateByCodePoint,
+  truncateByByte,
   stripTags,
   escapeHTML,
   unescapeHTML,
@@ -43,6 +48,157 @@ describe('string - truncate', () => {
   it('handles CJK text', () => {
     const result = truncate('こんにちは 世界 これはテストです', 3)
     assert.ok(result.includes('...'))
+  })
+})
+
+describe('string - truncateByWord', () => {
+  it('returns original text when wordLimit is 0', () => {
+    const result = truncateByWord('hello world', 0)
+    assert.strictEqual(result, 'hello world')
+  })
+
+  it('truncates to specified word count', () => {
+    const result = truncateByWord('hello world this is a test', 3)
+    assert.strictEqual(result, 'hello world this...')
+  })
+
+  it('handles empty string', () => {
+    const result = truncateByWord('', 5)
+    assert.strictEqual(result, '')
+  })
+
+  it('handles text shorter than limit', () => {
+    const result = truncateByWord('hello world', 10)
+    assert.strictEqual(result, 'hello world')
+  })
+
+  it('handles CJK text', () => {
+    const result = truncateByWord('こんにちは 世界 これはテストです', 3)
+    assert.ok(result.includes('...'))
+  })
+})
+
+describe('string - truncateByChar', () => {
+  it('returns original text when charLimit is 0', () => {
+    const result = truncateByChar('hello world', 0)
+    assert.strictEqual(result, 'hello world')
+  })
+
+  it('truncates to specified character count', () => {
+    const result = truncateByChar('hello world', 5)
+    assert.strictEqual(result, 'hello...')
+  })
+
+  it('handles empty string', () => {
+    const result = truncateByChar('', 3)
+    assert.strictEqual(result, '')
+  })
+
+  it('handles text shorter than limit', () => {
+    const result = truncateByChar('hello', 10)
+    assert.strictEqual(result, 'hello')
+  })
+
+  it('handles CJK text', () => {
+    const result = truncateByChar('こんにちは', 3)
+    assert.strictEqual(result, 'こんに...')
+  })
+
+  it('handles emoji grapheme clusters', () => {
+    // 👨‍👩‍👧‍👦 is 1 grapheme, then a, b, c are 3 more = 4 total
+    // charLimit=3 → 👨‍👩‍👧‍👦ab...
+    const result = truncateByChar('👨‍👩‍👧‍👦abc', 3)
+    assert.strictEqual(result, '👨‍👩‍👧‍👦ab...')
+  })
+
+  it('does not add ellipsis when text fits exactly', () => {
+    const result = truncateByChar('hello', 5)
+    assert.strictEqual(result, 'hello')
+  })
+})
+
+describe('string - truncateByGrapheme', () => {
+  it('is an alias for truncateByChar', () => {
+    assert.strictEqual(truncateByGrapheme, truncateByChar)
+  })
+
+  it('truncates to specified grapheme count', () => {
+    const result = truncateByGrapheme('Hello world', 5)
+    assert.strictEqual(result, 'Hello...')
+  })
+})
+
+describe('string - truncateByCodePoint', () => {
+  it('returns original text when within limit', () => {
+    const result = truncateByCodePoint('Hello', 5)
+    assert.strictEqual(result, 'Hello')
+  })
+
+  it('truncates to specified code point count', () => {
+    const result = truncateByCodePoint('Hello world', 5)
+    assert.strictEqual(result, 'Hello')
+  })
+
+  it('handles empty string', () => {
+    const result = truncateByCodePoint('', 3)
+    assert.strictEqual(result, '')
+  })
+
+  it('handles emoji (single code point per emoji)', () => {
+    // Most emoji are multiple code points (ZWJ sequences),
+    // but simple emoji like © are single code points
+    const result = truncateByCodePoint('abc😀def', 4)
+    assert.strictEqual(result, 'abc😀')
+  })
+
+  it('does not split surrogate pairs', () => {
+    // 𝄞 (U+1D11E) is a single code point but 2 UTF-16 code units
+    const result = truncateByCodePoint('𝄞abc', 2)
+    assert.strictEqual(result, '𝄞a')
+  })
+})
+
+describe('string - truncateByByte', () => {
+  it('returns original text when within limit', () => {
+    const result = truncateByByte('Hello', 10)
+    assert.strictEqual(result, 'Hello')
+  })
+
+  it('truncates ASCII text to byte count', () => {
+    const result = truncateByByte('Hello world', 5)
+    assert.strictEqual(result, 'Hello')
+  })
+
+  it('handles empty string', () => {
+    const result = truncateByByte('', 3)
+    assert.strictEqual(result, '')
+  })
+
+  it('does not cut multi-byte characters', () => {
+    // 'café' is 5 bytes (c=1, a=1, f=1, é=2)
+    // byte limit 4 should give 'caf' (first 4 bytes = c,a,f without é)
+    const result = truncateByByte('café', 4)
+    assert.strictEqual(result, 'caf')
+  })
+
+  it('handles 4-byte characters', () => {
+    // 𝄞 is 4 bytes, and '𝄞abc' is 7 bytes
+    // byte limit 4 should give just '𝄞'
+    const result = truncateByByte('𝄞abc', 4)
+    assert.strictEqual(result, '𝄞')
+  })
+
+  it('handles emoji with ZWJ sequences', () => {
+    // 👨‍👩‍👧‍👦 is 25 bytes, limit 24 gives 👨‍👩‍👧‍ (strips trailing U+FFFD)
+    const family = '👨‍👩‍👧‍👦'
+    const result = truncateByByte(family, 24)
+    assert.strictEqual(result, '👨‍👩‍👧‍')
+  })
+
+  it('returns full emoji when byte limit covers it', () => {
+    const family = '👨‍👩‍👧‍👦'
+    const result = truncateByByte(family, 25)
+    assert.strictEqual(result, family)
   })
 })
 
