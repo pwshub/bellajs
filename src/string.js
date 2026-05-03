@@ -13,10 +13,10 @@ const toString = (input) => {
  * @returns {string} The truncated text with ellipsis if needed.
  *
  * @example
- * truncate('Hello world, this is a test', 3) // 'Hello world, this...'
- * truncate('こんにちは世界', 2) // 'こんにちは 世界'
+ * truncateByWord('Hello world, this is a test', 3) // 'Hello world, this...'
+ * truncateByWord('こんにちは世界', 2) // 'こんにちは 世界'
  */
-export const truncate = (text, wordLimit = 0) => {
+export const truncateByWord = (text, wordLimit = 0) => {
   if (!text) return ''
   if (wordLimit <= 0) {
     return text
@@ -40,6 +40,97 @@ export const truncate = (text, wordLimit = 0) => {
 
   return truncatedText.trim()
 }
+
+/**
+ * Truncates text to a specified character count, respecting grapheme clusters.
+ * Works with any language including emoji and multi-byte characters.
+ *
+ * @param {string} text - The text to truncate.
+ * @param {number} [charLimit=0] - Maximum number of characters (graphemes). If 0, returns original text.
+ * @returns {string} The truncated text with ellipsis if needed.
+ *
+ * @example
+ * truncateByChar('Hello world', 5) // 'Hello...'
+ * truncateByChar('こんにちは', 3)   // 'こんにち...'
+ * truncateByChar('👨‍👩‍👧‍👦abc', 2)  // '👨‍👩‍👧‍👦...'
+ */
+export const truncateByChar = (text, charLimit = 0) => {
+  if (!text) return ''
+  if (charLimit <= 0) return text
+
+  const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' })
+  const segments = segmenter.segment(text)
+
+  let count = 0
+  let result = ''
+
+  for (const { segment } of segments) {
+    if (count >= charLimit) {
+      return result + '...'
+    }
+    result += segment
+    count++
+  }
+
+  return result
+}
+
+/**
+ * Alias for truncateByChar. Truncates text by grapheme clusters.
+ *
+ * @param {string} text - The text to truncate.
+ * @param {number} [charLimit=0] - Maximum number of grapheme clusters.
+ * @returns {string} The truncated text.
+ */
+export const truncateByGrapheme = truncateByChar
+
+/**
+ * Truncates text to a specified number of Unicode code points.
+ * Safe for PostgreSQL VARCHAR columns which count code points.
+ *
+ * @param {string} text - The text to truncate.
+ * @param {number} [max=250] - Maximum number of code points.
+ * @returns {string} The truncated text.
+ *
+ * @example
+ * truncateByCodePoint('Hello world', 5)  // 'Hello'
+ * truncateByCodePoint('👨‍👩‍👧‍👦abc', 2)  // '👨‍👩‍👧‍👦a'
+ */
+export const truncateByCodePoint = (text, max = 250) => {
+  if (!text) return ''
+  const chars = [...text]
+  if (chars.length <= max) return text
+  return chars.slice(0, max).join('')
+}
+
+/**
+ * Truncates text to a specified number of UTF-8 bytes.
+ * Safe for byte-constrained storage like VARBINARY columns.
+ *
+ * @param {string} text - The text to truncate.
+ * @param {number} [maxBytes=255] - Maximum number of UTF-8 bytes.
+ * @returns {string} The truncated text, ensuring no partial multi-byte characters.
+ *
+ * @example
+ * truncateByByte('Hello world', 5)     // 'Hello'
+ * truncateByByte('café', 4)            // 'caf'
+ * truncateByByte('𝄞 loud', 4)          // '𝄞'
+ */
+export const truncateByByte = (text, maxBytes = 255) => {
+  if (!text) return ''
+  const encoder = new TextEncoder()
+  const bytes = encoder.encode(text)
+  if (bytes.length <= maxBytes) return text
+  const decoder = new TextDecoder('utf-8', { fatal: false })
+  let result = decoder.decode(bytes.slice(0, maxBytes))
+  if (result.endsWith('\uFFFD')) {
+    result = result.slice(0, -1)
+  }
+  return result
+}
+
+/** @deprecated Use truncateByWord instead. Will be removed in next major version. */
+export const truncate = truncateByWord
 
 /**
  * Removes all HTML tags from a string.
