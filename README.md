@@ -329,9 +329,9 @@ npm run lint:fix
 
 ## AI Agents
 
+- DeepSeek
 - Qwen Code
 - Google Gemini
-- DeepSeek
 
 ## License
 
