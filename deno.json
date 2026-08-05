@@ -1,6 +1,6 @@
 {
   "name": "@pwshub/bellajs",
-  "version": "13.1.0rc1",
+  "version": "13.1.0-rc2",
   "description": "A useful helper for any javascript program",
   "homepage": "https://github.com/pwshub/bellajs",
   "repository": {
