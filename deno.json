@@ -5,7 +5,7 @@
   "homepage": "https://github.com/pwshub/bellajs",
   "repository": {
     "type": "git",
-    "url": "git@github.com:pwshub/bellajs.git"
+    "url": "git+ssh://git@github.com/pwshub/bellajs.git"
   },
   "author": "ndaidong",
   "license": "MIT",
