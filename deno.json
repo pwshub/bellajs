@@ -1,0 +1,40 @@
+{
+  "name": "@pwshub/bellajs",
+  "version": "13.1.0rc1",
+  "description": "A useful helper for any javascript program",
+  "homepage": "https://github.com/pwshub/bellajs",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:pwshub/bellajs.git"
+  },
+  "author": "ndaidong",
+  "license": "MIT",
+  "exports": "./mod.ts",
+  "tasks": {
+    "test": "deno test --allow-all",
+    "lint": "deno lint",
+    "build": "deno run -A ./scripts/build_npm.ts"
+  },
+  "imports": {
+    "@deno/dnt": "jsr:@deno/dnt@^0.43.2"
+  },
+  "lint": {
+    "include": ["src/", "mod.ts", "scripts/", "tests/"],
+    "exclude": ["npm/"],
+    "rules": {
+      "tags": ["recommended"],
+      "exclude": ["no-explicit-any"]
+    }
+  },
+  "fmt": {
+    "include": ["src/", "mod.ts", "scripts/", "tests/"],
+    "exclude": ["npm/"]
+  },
+  "test": {
+    "include": ["tests/"]
+  },
+  "publish": {
+    "include": ["LICENSE", "README.md", "mod.ts", "docs/", "src/"],
+    "exclude": ["tests/", "scripts/"]
+  }
+}
