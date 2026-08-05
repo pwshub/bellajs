@@ -1,0 +1,37 @@
+name: publish-npm
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: lts
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "latest"
+          registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false
+
+      - name: test
+        run: deno test --allow-all
+
+      - name: build npm package
+        run: deno task build
+
+      - name: publish to npm
+        working-directory: npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

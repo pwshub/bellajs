@@ -1,338 +1,262 @@
 # BellaJS
 
-A lightweight, functional utility library for Node.js, Bun, and Deno.
+A lightweight, functional utility library for Deno, Node.js, and Bun.
 
+[![JSR](https://jsr.io/badges/@pwshub/bellajs)](https://jsr.io/@pwshub/bellajs)
 [![npm version](https://badge.fury.io/js/@pwshub%2Fbellajs.svg)](https://badge.fury.io/js/@pwshub%2Fbellajs)
-![CodeQL](https://github.com/pwshub/bellajs/workflows/CodeQL/badge.svg)
 ![CI test](https://github.com/pwshub/bellajs/workflows/ci-test/badge.svg)
 
 ## Features
 
-- **Zero runtime dependencies** - Pure JavaScript, no external libs
-- **Functional programming** - Pure functions, method chaining, immutability
-- **Modern JavaScript** - ESM modules, JSDocs, TypeScript definitions
-- **Multi-language support** - Intl-based text processing for any language
-- **Cryptographically secure** - Uses `crypto.getRandomValues()` for random generation
-- **Tree-shakeable** - Import only what you need
+- **Zero runtime dependencies** — Pure TypeScript, no external libs
+- **Functional programming** — Pure functions, method chaining, immutability
+- **Multi-language support** — Intl-based text processing for any language
+- **Cryptographically secure** — Uses `crypto.getRandomValues()` for random
+  generation
+- **Tree-shakeable** — Import only what you need
+- **Dual registry** — Available on both [JSR](https://jsr.io/@pwshub/bellajs)
+  and [npm](https://www.npmjs.com/package/@pwshub/bellajs)
 
 ## Installation
+
+### Deno
+
+```bash
+deno add jsr:@pwshub/bellajs
+```
+
+### Node.js / Bun
+
+```bash
+npx jsr add @pwshub/bellajs
+# or
+pnpm add jsr:@pwshub/bellajs
+# or
+bunx jsr add @pwshub/bellajs
+```
+
+Alternatively, install from npm:
 
 ```bash
 npm install @pwshub/bellajs
 # or
-pnpm install @pwshub/bellajs
-# or
 bun add @pwshub/bellajs
 ```
 
-### Browser Usage
+### Browser
 
-BellaJS works directly in browsers via CDN. Load it from [esm.sh](https://esm.sh/@pwshub/bellajs) or [unpkg.com](https://unpkg.com/@pwshub/bellajs):
+BellaJS works directly in browsers via CDN:
 
 ```html
 <script type="module">
 import { genid } from "https://esm.sh/@pwshub/bellajs";
-// or from unpkg.com
-import { genid } from "https://unpkg.com/@pwshub/bellajs";
-
-for (let i = 0; i < 5; i++) {
-  console.log(genid());
-}
 </script>
 ```
 
 ## Quick Start
 
-```javascript
-import { 
-  clone, 
-  formatDate, 
-  formatRelativeTime, 
-  genid, 
+```typescript
+import {
+  clone,
+  formatDate,
+  formatRelativeTime,
+  genid,
   maybe,
-  pipe 
-} from '@pwshub/bellajs'
+  pipe,
+} from "@pwshub/bellajs";
 
 // Safe null handling with Maybe
 const email = maybe(user)
-  .map(u => u.profile)
-  .map(p => p.email)
-  .orElse(() => 'default@example.com')
-  .value()
+  .map((u) => u.profile)
+  .map((p) => p.email)
+  .orElse(() => "default@example.com")
+  .value();
 
 // Function composition
 const process = pipe(
-  data => data.filter(x => x.active),
-  data => data.map(x => x.name),
-  names => names.join(', ')
-)
+  (data: string[]) => data.filter((x) => x.length > 3),
+  (data) => data.map((x) => x.toUpperCase()),
+  (names) => names.join(", "),
+);
 
 // Generate secure random IDs
-const id = genid(16, 'user_') // 'user_aB3xY9kL2mN5pQ7r'
+const id = genid(16, "user_"); // 'user_aB3xY9kL2mN5pQ7r'
 
 // Format dates with multi-language support
-formatDate(new Date(), 'vi') // "20:34:28, 3 thg 1, 2026"
-formatRelativeTime(Date.now() - 300000, 'ja') // "5 分前"
+formatDate(new Date(), "vi"); // "20:34:28, 3 thg 1, 2026"
+formatRelativeTime(Date.now() - 300000, "ja"); // "5 分前"
 ```
 
 ## Documentation
 
 ### Core Modules
 
-| Module | Functions | Description |
-|--------|-----------|-------------|
-| **[Detection](docs/detection.md)** | 15 functions | Type checking utilities |
-| **[String](docs/string.md)** | 20 functions | Text manipulation and analysis |
-| **[Random](docs/random.md)** | 2 functions | Cryptographically secure random generation |
-| **[Date](docs/date.md)** | 7 functions | Date formatting and time calculations |
-| **[Array](docs/array.md)** | 15 functions | Array utilities and transformations |
-| **[Object](docs/object.md)** | 2 functions | Deep cloning and property copying |
-| **[Functional](docs/functional.md)** | 4 functions | compose, pipe, curry, maybe |
-| **[Number](docs/number.md)** | 2 functions | Number formatting utilities |
-| **[Similarity](docs/similarity.md)** | 5 functions | String comparison and similarity |
-| **[Store](docs/store.md)** | 1 function | In-memory key-value store with TTL |
-| **[Utility](docs/utility.md)** | 1 function | Property definition helper |
-| **[Rating](docs/rating.md)** | 6 functions | Wilson Score, Bayesian Average, time-decay ratings |
+| Module                               | Functions    | Description                                        |
+| ------------------------------------ | ------------ | -------------------------------------------------- |
+| **[Detection](docs/detection.md)**   | 15 functions | Type checking utilities                            |
+| **[String](docs/string.md)**         | 20 functions | Text manipulation and analysis                     |
+| **[Random](docs/random.md)**         | 2 functions  | Cryptographically secure random generation         |
+| **[Date](docs/date.md)**             | 7 functions  | Date formatting and time calculations              |
+| **[Array](docs/array.md)**           | 15 functions | Array utilities and transformations                |
+| **[Object](docs/object.md)**         | 2 functions  | Deep cloning and property copying                  |
+| **[Functional](docs/functional.md)** | 4 functions  | compose, pipe, curry, maybe                        |
+| **[Number](docs/number.md)**         | 2 functions  | Number formatting utilities                        |
+| **[Similarity](docs/similarity.md)** | 5 functions  | String comparison and similarity                   |
+| **[Store](docs/store.md)**           | 1 function   | In-memory key-value store with TTL                 |
+| **[Utility](docs/utility.md)**       | 1 function   | Property definition helper                         |
+| **[Rating](docs/rating.md)**         | 6 functions  | Wilson Score, Bayesian Average, time-decay ratings |
 
-### Function Count: **75 total**
-
-## Security Notes
-
-### Random Functions (genid, randomInt)
-
-✅ **Safe for:**
-- Session IDs
-- CSRF tokens
-- Random identifiers
-- Nonces
-
-Uses `crypto.getRandomValues()` - cryptographically secure!
+**75 functions total.**
 
 ## Examples by Use Case
 
-### 🔐 Safe Property Access
+### Safe Property Access
 
-```javascript
-import { maybe } from '@pwshub/bellajs'
+```typescript
+import { maybe } from "@pwshub/bellajs";
 
-// Without maybe (nested if statements)
-let email
-if (user && user.profile && user.profile.contact) {
-  email = user.profile.contact.email
-} else {
-  email = 'default@example.com'
-}
-
-// With maybe (clean chaining)
 const email = maybe(user)
-  .map(u => u.profile)
-  .map(p => p.contact)
-  .map(c => c.email)
-  .orElse(() => 'default@example.com')
-  .value()
+  .map((u) => u.profile)
+  .map((p) => p.contact)
+  .map((c) => c.email)
+  .orElse(() => "default@example.com")
+  .value();
 ```
 
-### 🌍 Multi-language Text Processing
+### Multi-language Text Processing
 
-```javascript
-import { 
-  formatDate, 
-  formatRelativeTime, 
+```typescript
+import {
+  formatDate,
+  formatRelativeTime,
   getWordCount,
+  truncateByChar,
   truncateByWord,
-  truncateByChar
-} from '@pwshub/bellajs'
+} from "@pwshub/bellajs";
 
-// Date formatting
-formatDate(new Date(), 'en')     // "Jan 3, 2026, 8:34:28 PM"
-formatDate(new Date(), 'vi')     // "20:34:28, 3 thg 1, 2026"
-formatDate(new Date(), 'ja')     // "2026/1/3 20:34:28"
-formatDate(new Date(), 'zh')     // "2026 年 1 月 3 日 GMT+7 下午8:34:28"
+formatDate(new Date(), "en"); // "Jan 3, 2026, 8:34:28 PM"
+formatDate(new Date(), "vi"); // "20:34:28, 3 thg 1, 2026"
+formatDate(new Date(), "ja"); // "2026/1/3 20:34:28"
 
-// Relative time
-formatRelativeTime(Date.now() - 3600000, 'en')  // "1 hour ago"
-formatRelativeTime(Date.now() - 3600000, 'vi')  // "1 giờ trước"
-formatRelativeTime(Date.now() - 3600000, 'ko')  // "1 시간 전"
+formatRelativeTime(Date.now() - 3600000, "en"); // "1 hour ago"
+formatRelativeTime(Date.now() - 3600000, "vi"); // "1 giờ trước"
 
-// Word counting (works with CJK, Arabic, etc.)
-getWordCount('Hello world')           // 2
-getWordCount('こんにちは世界')         // 2
-getWordCount('مرحبا بالعالم')         // 2
+getWordCount("Hello world"); // 2
+getWordCount("こんにちは世界"); // 2
 
-// Truncate by word count (respecting word boundaries)
-truncateByWord('Hello world this is a test', 3)  // "Hello world this..."
-
-// Truncate by character count (respecting grapheme clusters)
-truncateByChar('Hello world', 5)     // "Hello..."
-truncateByChar('こんにちは', 3)       // "こんに..."
-truncateByChar('👨‍👩‍👧‍👦abc', 3)      // "👨‍👩‍👧‍👦ab..."
+truncateByWord("Hello world this is a test", 3); // "Hello world this..."
+truncateByChar("👨‍👩‍👧‍👦abc", 3); // "👨‍👩‍👧‍👦ab..."
 ```
 
-### 🎲 Secure Random Generation
+### Secure Random Generation
 
-```javascript
-import { genid, randomInt } from '@pwshub/bellajs'
+```typescript
+import { genid, randomInt } from "@pwshub/bellajs";
 
-// Generate unique IDs
-genid()              // 'aB3xY9kL2mN5pQ7rS8tU0vW1xY2zA3bC' (32 chars)
-genid(16)            // 'kL2mN5pQ7rS8tU0v' (16 chars)
-genid(16, 'user_')   // 'user_aB3xY9kL2mN5p' (prefix included in length)
+genid(); // 'aB3xY9kL2mN5pQ7rS8tU0vW1xY2zA3bC' (32 chars)
+genid(16); // 'kL2mN5pQ7rS8tU0v' (16 chars)
+genid(16, "user_"); // 'user_aB3xY9kL2mN5p'
 
-// Random integers (cryptographically secure)
-randomInt(100)       // 0-100
-randomInt(1)         // 0 or 1
-randomInt(1000000)   // 0-1000000
+randomInt(100); // 0–100
 ```
 
-### 🗄️ Caching Without Redis
+### Caching Without Redis
 
-```javascript
-import { memstore } from '@pwshub/bellajs'
+```typescript
+import { memstore } from "@pwshub/bellajs";
 
-// Create cache with 5-minute default TTL
-const cache = memstore(300)
+const cache = memstore(300); // 5-minute default TTL
 
-// Store data
-cache.set('user:1', { name: 'John', email: 'john@example.com' })
+cache.set("user:1", { name: "John", email: "john@example.com" });
+const user = cache.get("user:1");
 
-// Retrieve data
-const user = cache.get('user:1')
+cache.set("session:abc", { userId: 1 }, 3600); // custom TTL: 1 hour
 
-// Store with custom TTL (1 hour)
-cache.set('session:abc', { userId: 1 }, 3600)
-
-// Check existence
-if (cache.has('user:1')) {
-  console.log('User cached')
-}
-
-// Get cache size (excludes expired entries)
-console.log(`Cache has ${cache.size()} entries`)
-
-// Iterate over entries
 for (const [key, value] of cache.entries()) {
-  console.log(key, value)
+  console.log(key, value);
 }
 ```
 
-### 🔗 Function Pipelines
+### Function Pipelines
 
-```javascript
-import { pipe, compose, curry, filter, map } from '@pwshub/bellajs'
+```typescript
+import { compose, curry, pipe } from "@pwshub/bellajs";
 
-// Left-to-right pipeline
 const processUser = pipe(
-  user => user.profile,
-  profile => profile.settings,
-  settings => settings.theme
-)
+  (user: { profile: { settings: { theme: string } } }) => user.profile,
+  (profile) => profile.settings,
+  (settings) => settings.theme,
+);
 
-// Right-to-left composition
 const analyze = compose(
-  result => result.toUpperCase(),
-  data => data.join('-'),
-  items => items.filter(x => x.active)
-)
+  (result: string) => result.toUpperCase(),
+  (data: string[]) => data.join("-"),
+  (items: string[]) => items.filter((x) => x.length > 0),
+);
 
-// Curried functions
-const add = (a, b) => a + b
-const curriedAdd = curry(add)
-curriedAdd(5)(3)  // 8
-curriedAdd(5, 3)  // 8
+const add = (a: number, b: number) => a + b;
+const curriedAdd = curry(add);
+curriedAdd(5)(3); // 8
 ```
 
-### 📊 Array Transformations
+### Array Transformations
 
-```javascript
-import { 
-  chunk, 
-  flatten, 
-  groupBy, 
+```typescript
+import {
+  chunk,
   difference,
+  flatten,
+  groupBy,
   intersection,
-  zip 
-} from '@pwshub/bellajs'
+  zip,
+} from "@pwshub/bellajs";
 
-// Chunk array
-chunk([1, 2, 3, 4, 5], 2)  // [[1,2], [3,4], [5]]
-
-// Flatten nested arrays
-flatten([1, [2, [3, [4]]]], 2)  // [1, 2, 3, [4]]
-
-// Group by property
-groupBy(users, 'role')  // { admin: [...], user: [...] }
-
-// Array operations
-difference([1, 2, 3, 4], [2, 3])  // [1, 4]
-intersection([1, 2, 3], [2, 3, 4])  // [2, 3]
-zip([1, 2], ['a', 'b'])  // [[1,'a'], [2,'b']]
+chunk([1, 2, 3, 4, 5], 2); // [[1,2], [3,4], [5]]
+flatten([1, [2, [3, [4]]]], 2); // [1, 2, 3, [4]]
+difference([1, 2, 3, 4], [2, 3]); // [1, 4]
+intersection([1, 2, 3], [2, 3, 4]); // [2, 3]
+zip([1, 2], ["a", "b"]); // [[1,'a'], [2,'b']]
 ```
 
-### 🔢 Number Formatting
+### Number Formatting
 
-```javascript
-import { formatBytes, formatNumber } from '@pwshub/bellajs'
+```typescript
+import { formatBytes, formatNumber } from "@pwshub/bellajs";
 
-// Format file sizes
-formatBytes(1024)           // '1 KiB'
-formatBytes(1536)           // '1.5 KiB'
-formatBytes(1048576)        // '1 MiB'
-formatBytes(1234567890)     // '1.15 GiB'
-
-// Format numbers for display
-formatNumber(123)           // '123.00'
-formatNumber(123.456)       // '123.46'
-formatNumber(99.9, 0)       // '100'
-```
-
-### 🔗 URL Validation
-
-```javascript
-import { isValidUrl, isAbsoluteUrl } from '@pwshub/bellajs'
-
-// Validate URLs
-isValidUrl('https://example.com')    // true
-isValidUrl('http://example.com')     // true
-isValidUrl('ftp://example.com')      // false
-isValidUrl('not-a-url')              // false
-
-// Check if URL is absolute
-isAbsoluteUrl('https://example.com')     // true
-isAbsoluteUrl('//cdn.example.com')       // true
-isAbsoluteUrl('/path/to/resource')       // false
+formatBytes(1024); // '1 KiB'
+formatBytes(1234567890); // '1.15 GiB'
+formatNumber(123.456); // '123.46'
+formatNumber(99.9, 0); // '100'
 ```
 
 ## Platform Support
 
-| Platform | Version | Support |
-|----------|---------|---------|
-| Node.js | 22+ | ✅ Full |
-| Bun | 1.0+ | ✅ Full |
-| Deno | 2.0+ | ✅ Full |
-| Browsers | Modern (ESM) | ✅ Full |
+| Platform | Version      | Support    |
+| -------- | ------------ | ---------- |
+| Deno     | 2.0+         | ✅ Primary |
+| Node.js  | 22+          | ✅ Full    |
+| Bun      | 1.0+         | ✅ Full    |
+| Browsers | Modern (ESM) | ✅ Full    |
 
 ## Development
 
 ```bash
-# Install dependencies
-npm install
-
 # Run tests
-npm test
+deno test
 
 # Run linter
-npm run lint
+deno lint
 
-# Auto-fix linting issues
-npm run lint:fix
+# Build npm package (via DNT)
+deno task build
+
+# Publish to JSR
+deno publish
+
+# Publish to npm (after building)
+cd npm && npm publish
 ```
-
-## AI Agents
-
-- DeepSeek
-- Qwen Code
-- Google Gemini
 
 ## License
 
-The MIT License (MIT)
+MIT

@@ -1,0 +1,13 @@
+export * from "./src/detection.ts";
+export * from "./src/string.ts";
+export * from "./src/random.ts";
+export * from "./src/date.ts";
+export * from "./src/fp.ts";
+export * from "./src/defineProp.ts";
+export * from "./src/object.ts";
+export * from "./src/array.ts";
+export * from "./src/similarity.ts";
+export * from "./src/memstore.ts";
+export * from "./src/maybe.ts";
+export * from "./src/number.ts";
+export { rating } from "./src/rating.ts";
