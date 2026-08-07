@@ -8,14 +8,11 @@ A lightweight, functional utility library for Deno, Node.js, and Bun.
 
 ## Features
 
-- **Zero runtime dependencies** — Pure TypeScript, no external libs
-- **Functional programming** — Pure functions, method chaining, immutability
-- **Multi-language support** — Intl-based text processing for any language
-- **Cryptographically secure** — Uses `crypto.getRandomValues()` for random
-  generation
-- **Tree-shakeable** — Import only what you need
-- **Dual registry** — Available on both [JSR](https://jsr.io/@pwshub/bellajs)
-  and [npm](https://www.npmjs.com/package/@pwshub/bellajs)
+- Type checking and validation
+- String processing and similarity
+- Array, object, and functional utilities
+- Date, number, and secure random utilities
+- TTL cache, helper utilities, and ranking algorithms
 
 ## Installation
 
@@ -28,24 +25,28 @@ deno add jsr:@pwshub/bellajs
 ### Node.js / Bun
 
 ```bash
-npx jsr add @pwshub/bellajs
+pnpm i jsr:@pwshub/bellajs
 # or
-pnpm add jsr:@pwshub/bellajs
+vlt install jsr:@pwshub/bellajs
 # or
 bunx jsr add @pwshub/bellajs
+# or
+npx jsr add @pwshub/bellajs
 ```
 
 Alternatively, install from npm:
 
 ```bash
-npm install @pwshub/bellajs
+pnpm i @pwshub/bellajs
 # or
 bun add @pwshub/bellajs
+# or
+vlt add @pwshub/bellajs
+# or
+npm install @pwshub/bellajs
 ```
 
 ### Browser
-
-BellaJS works directly in browsers via CDN:
 
 ```html
 <script type="module">
@@ -55,7 +56,7 @@ import { genid } from "https://esm.sh/@pwshub/bellajs";
 
 ## Quick Start
 
-```typescript
+```ts
 import {
   clone,
   formatDate,
@@ -112,7 +113,7 @@ formatRelativeTime(Date.now() - 300000, "ja"); // "5 分前"
 
 ### Safe Property Access
 
-```typescript
+```ts
 import { maybe } from "@pwshub/bellajs";
 
 const email = maybe(user)
@@ -125,7 +126,7 @@ const email = maybe(user)
 
 ### Multi-language Text Processing
 
-```typescript
+```ts
 import {
   formatDate,
   formatRelativeTime,
@@ -150,7 +151,7 @@ truncateByChar("👨‍👩‍👧‍👦abc", 3); // "👨‍👩‍👧‍👦
 
 ### Secure Random Generation
 
-```typescript
+```ts
 import { genid, randomInt } from "@pwshub/bellajs";
 
 genid(); // 'aB3xY9kL2mN5pQ7rS8tU0vW1xY2zA3bC' (32 chars)
@@ -162,7 +163,7 @@ randomInt(100); // 0–100
 
 ### Caching Without Redis
 
-```typescript
+```ts
 import { memstore } from "@pwshub/bellajs";
 
 const cache = memstore(300); // 5-minute default TTL
@@ -179,7 +180,7 @@ for (const [key, value] of cache.entries()) {
 
 ### Function Pipelines
 
-```typescript
+```ts
 import { compose, curry, pipe } from "@pwshub/bellajs";
 
 const processUser = pipe(
@@ -201,7 +202,7 @@ curriedAdd(5)(3); // 8
 
 ### Array Transformations
 
-```typescript
+```ts
 import {
   chunk,
   difference,
@@ -220,7 +221,7 @@ zip([1, 2], ["a", "b"]); // [[1,'a'], [2,'b']]
 
 ### Number Formatting
 
-```typescript
+```ts
 import { formatBytes, formatNumber } from "@pwshub/bellajs";
 
 formatBytes(1024); // '1 KiB'

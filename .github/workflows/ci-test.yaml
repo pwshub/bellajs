@@ -5,15 +5,14 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        deno-version: [2.x.x]
+        deno-version: ["lts", "canary"]
 
     steps:
       - uses: actions/checkout@v7
 
-      - name: Setup Deno ${{ matrix.deno-version }}
+      - name: Setup Deno
         uses: denoland/setup-deno@v2
         with:
           deno-version: ${{ matrix.deno-version }}
@@ -23,3 +22,6 @@ jobs:
 
       - name: test
         run: deno test --allow-all
+
+      - name: audit
+        run: deno audit
